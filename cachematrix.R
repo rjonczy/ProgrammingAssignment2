@@ -1,9 +1,39 @@
 #
-# function makeCacheMatrix - creates a special "matrix" object that can cache its inverse
+# Example:
 #
+# 1.) create a matrix
+# > A <- matrix(c(-1, -2, 1, 1), 2, 2)
 #
+# 2.) create a inverse cacheable matrix object
+# > Ac <- makeCacheMatrix(A)
 #
+# 3.) calculate inverse for a 1st time
+# > cacheSolve(Ac)
+# [,1] [,2]
+# [1,]    1   -1
+# [2,]    2   -1
 #
+# 4.) calcute inverse (for the same matrix) 2nd time
+# > cacheSolve(Ac)
+# getting cached data
+# [,1] [,2]
+# [1,]    1   -1
+# [2,]    2   -1
+
+# 5.) check if we got correct matrix inverse
+# > Ac$get() %*% cacheSolve(Ac)
+# getting cached data
+# [,1] [,2]
+# [1,]    1    0
+# [2,]    0    1
+
+
+
+#
+# function makeCacheMatrix - creates a special "matrix" object that can cache its inverse,
+#                            as input it takes matrix and returns special "matrix" object
+#
+
 
 makeCacheMatrix <- function(x = matrix()) {
     
@@ -12,6 +42,7 @@ makeCacheMatrix <- function(x = matrix()) {
     
     # function to set x matrix
     set <- function(y) {
+        # sets x and inverse in parent environment
         x <<- y
         inverse <<- NULL
     }
@@ -30,10 +61,9 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 #
-# function cacheSolve - computes the inverse of special "matrix" returned by makeCacheMatrix function
+# function cacheSolve - computes the inverse of special "matrix" object returned by makeCacheMatrix function
 #                       - if inverse has been already calculated (and matrix has not chnaged) than function returns inverse from cache
 #                       - if inverse has not been calculated before (or matrix changed), calculate it and return
-#
 #
 
 cacheSolve <- function(x, ...) {
